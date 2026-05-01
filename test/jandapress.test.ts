@@ -1,13 +1,20 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import p from "phin";
+/// <reference types="bun" />
+import { expect, test } from "bun:test";
+import app from "../src/index";
 import { nhentaiHeaders } from "../src/utils/modifier";
 
-const port = process.env.PORT ?? 3000;
+const baseUrl = "http://localhost:3000";
 
 type ApiResponse = {
   success: boolean;
   data?: {
+    id?: number;
+  };
+};
+
+type NhentaiApiResponse = {
+  id?: number;
+  result?: {
     id?: number;
   };
 };
@@ -20,10 +27,10 @@ async function fetchNhentaiApi(id: number) {
 
   for (const url of urls) {
     try {
-      const res = await p({ url, parse: "json", headers: nhentaiHeaders() });
-      if (res.statusCode !== 200) continue;
+      const res = await fetch(url, { headers: nhentaiHeaders(), redirect: "follow" });
+      if (res.status !== 200) continue;
 
-      const json = res.body as any;
+      const json = await res.json() as NhentaiApiResponse;
       const resolvedId = json.id ?? json?.result?.id;
       if (resolvedId === id) return;
     } catch {
@@ -36,22 +43,24 @@ async function fetchNhentaiApi(id: number) {
 
 async function run(path: string, id?: number) {
   try {
-    const res = await p({
-      url: `http://localhost:${port}${path}`,
-      parse: "json",
-      timeout: 20000
+    const req = new Request(`${baseUrl}${path}`, {
+      method: "GET",
+      headers: {
+        "x-real-ip": "127.0.0.1",
+      },
     });
+    const res = await app.fetch(req);
 
-    assert.equal(res.statusCode, 200);
+    expect(res.status).toBe(200);
 
-    const json = res.body as ApiResponse;
+    const json = await res.json() as ApiResponse;
 
     console.log(JSON.stringify(json, null, 2));
 
     if (!json.success) throw new Error("scraper failed");
 
     if (id !== undefined) {
-      assert.equal(json.data?.id, id);
+      expect(json.data?.id).toBe(id);
     }
   } catch (err) {
     if (path.startsWith("/nhentai") && id !== undefined) {

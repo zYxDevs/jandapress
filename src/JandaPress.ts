@@ -1,4 +1,3 @@
-import p, { IResponse } from "phin";
 import Keyv from "keyv";
 import KeyvRedis from "@keyv/redis";
 import { nhentaiHeaders } from "./utils/modifier";
@@ -16,7 +15,7 @@ class JandaPress {
   useragent: string;
   constructor() {
     this.url = "";
-    this.useragent = process.env.USER_AGENT || "jandapress/7.1.1-alpha Node.js/22.22.0";
+    this.useragent = process.env.USER_AGENT || "jandapress/10.0.1-alpha Bun/1.3.13";
   }
 
   /**
@@ -27,13 +26,14 @@ class JandaPress {
    */
   async simulateNhentaiRequest(target: string): Promise<unknown> {
     try {
-      const res = await p({
-        url: target,
-        parse: "json",
+      const res = await fetch(target, {
         headers: nhentaiHeaders(),
-        followRedirects: true
+        redirect: "follow"
       });
-      return res.body;
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
+      return await res.json();
     } catch (err) {
       const e = err as Error;
       throw new Error(e.message);
@@ -53,24 +53,31 @@ class JandaPress {
       return cached;
     } else if (url.includes("/random")) {
       console.log("Random should not be cached");
-      const res = await p({ 
-        url: url, 
+      const res = await fetch(url, {
         headers: {
           "User-Agent": this.useragent,
         },
-        followRedirects: true });
-      return res.body;
+        redirect: "follow"
+      });
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
+      const body = Buffer.from(await res.arrayBuffer());
+      return body;
     } else {
       console.log("Fetching from source");
-      const res = await p({ 
-        url: url, 
+      const res = await fetch(url, {
         headers: {
           "User-Agent": this.useragent,
         },
-        followRedirects: true 
+        redirect: "follow"
       });
-      await keyv.set(url, res.body, ttl);
-      return res.body;
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
+      const body = Buffer.from(await res.arrayBuffer());
+      await keyv.set(url, body, ttl);
+      return body;
     }
   }
 
@@ -106,11 +113,11 @@ class JandaPress {
   }
 
   async getServer(): Promise<string> {
-    const raw = await p({ 
-      "url": "http://ip-api.com/json", 
-      "parse": "json" 
-    }) as IResponse;
-    const data = raw.body as unknown as { country: string, regionName: string };
+    const raw = await fetch("https://ip-api.com/json");
+    if (!raw.ok) {
+      throw new Error(`Request failed with status ${raw.status}`);
+    }
+    const data = await raw.json() as { country: string, regionName: string };
     return `${data.country}, ${data.regionName}`;
     
   }
