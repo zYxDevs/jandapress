@@ -1,6 +1,6 @@
 import Keyv from "keyv";
 import KeyvRedis from "@keyv/redis";
-import { nhentaiHeaders } from "./utils/modifier";
+import { defaultUserAgent, nhentaiHeaders } from "./utils/modifier";
 
 const keyv = process.env.REDIS_URL
   ? new Keyv({ store: new KeyvRedis(process.env.REDIS_URL) })
@@ -8,6 +8,17 @@ const keyv = process.env.REDIS_URL
   
 keyv.on("error", err => console.log("Connection Error", err));
 const ttl = 1000 * 60 * 60 * Number(process.env.EXPIRE_CACHE);
+const GEO_TIMEOUT_MS = 3000;
+
+let cachedLastLocation: string | null = null;
+let lastLocationTimestamp = 0;
+
+function cachedLocationOrUnknown(): string {
+  if (cachedLastLocation && lastLocationTimestamp > 0) {
+    return cachedLastLocation;
+  }
+  return "Unknown";
+}
 
 
 class JandaPress {
@@ -15,7 +26,7 @@ class JandaPress {
   useragent: string;
   constructor() {
     this.url = "";
-    this.useragent = process.env.USER_AGENT || "jandapress/10.0.1-alpha Bun/1.3.13";
+    this.useragent = process.env.USER_AGENT || defaultUserAgent();
   }
 
   /**
@@ -113,12 +124,43 @@ class JandaPress {
   }
 
   async getServer(): Promise<string> {
-    const raw = await fetch("https://ip-api.com/json");
-    if (!raw.ok) {
-      throw new Error(`Request failed with status ${raw.status}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), GEO_TIMEOUT_MS);
+
+    try {
+      // ip-api free tier often rejects HTTPS requests with 403;
+      const raw = await fetch("https://ipwho.is/", {
+        signal: controller.signal,
+      });
+      if (!raw.ok) {
+        return cachedLocationOrUnknown();
+      }
+      const data = await raw.json() as {
+        success?: boolean;
+        country?: string;
+        region?: string;
+      };
+      if (data.success === false) {
+        return cachedLocationOrUnknown();
+      }
+      const country = data.country?.trim();
+      const region = data.region?.trim();
+      if (!country || !region) {
+        return cachedLocationOrUnknown();
+      }
+
+      const location = `${country}, ${region}`;
+      cachedLastLocation = location;
+      lastLocationTimestamp = Date.now();
+      return location;
+    } catch {
+      return cachedLocationOrUnknown();
+    } finally {
+      clearTimeout(timeoutId);
+      if (!controller.signal.aborted) {
+        controller.abort();
+      }
     }
-    const data = await raw.json() as { country: string, regionName: string };
-    return `${data.country}, ${data.regionName}`;
     
   }
 }
