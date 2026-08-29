@@ -1,24 +1,21 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.14-alpine AS base
+# Build stage
+FROM rust:1.85-slim AS builder
+RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/jandapress
+COPY . .
+RUN cargo build --release
+
+# Runtime stage
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-ENV NODE_ENV=production
+COPY --from=builder /usr/src/jandapress/target/release/jandapress /app/jandapress
 
-FROM base AS deps
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
-
-FROM deps AS build
-COPY tsconfig.json ./
-COPY src ./src
-RUN bun run build
-
-FROM base AS runtime
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile --production
-COPY --from=build /app/build ./build
-USER bun
-
+ENV PORT=3000
 EXPOSE 3000
 
-CMD ["bun", "run", "build/src/index.js"]
+CMD ["/app/jandapress"]
