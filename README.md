@@ -1,5 +1,5 @@
 <div align="center">
-<a href="http://localhost:3000"><img width="500" src="resources/project/images/tomoe-janda.png" alt="jandapress"></a>
+<a href="http://localhost:3000"><img width="500" src="resources/project/images/tomoe-janda.webp" alt="jandapress"></a>
 
 <h4 align="center">Unified REST + GraphQL API for nhentai and other doujinshi</h4>
 <p align="center">
@@ -18,7 +18,7 @@ The motivation behind this project is to provide developers with accessible and 
 
 ---
 
-<a href="http://localhost:3000"><img align="right" src="resources/project/images/tomoe.png" width="300"></a>
+<a href="http://localhost:3000"><img align="right" src="resources/project/images/tomoe.webp" width="300"></a>
 
 - [Jandapress](#)
   - [The problem](#the-problem)
