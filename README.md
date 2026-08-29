@@ -7,8 +7,8 @@
 	<a href="https://qlty.sh/gh/sinkaroid/projects/jandapress"><img src="https://qlty.sh/gh/sinkaroid/projects/jandapress/maintainability.svg" alt="Maintainability" /></a>
 </p>
 
-Jandapress was originally named **JCE** (Janda Cheerio Express (legacy name)) and now runs on **Bun** + **Hono**.  
-The motivation behind this project is to provide developers with accessible and actionable data from various doujinshi sources, with a focus on aggregation and ease of integration for applications and services.
+Jandapress was originally named **JCE** (Janda Cheerio ExpressJS (`legacy-name`)).  
+The motivation behind this project is to provide, accessible and actionable data from various doujinshi sources, with a focus on aggregation and ease of integration for applications and services.
 
 <a href="https://sinkaroid.github.io/jandapress">Playground</a> •
 <a href="https://github.com/sinkaroid/jandapress/blob/master/CONTRIBUTING.md">Contributing</a> •
@@ -35,19 +35,19 @@ The motivation behind this project is to provide developers with accessible and 
   - [Playground](https://sinkaroid.github.io/jandapress)
     - [Routing](#playground)
     - [Status response](#status-response)
-  - [CLosing remarks](https://github.com/sinkaroid/jandapress/blob/master/CLOSING_REMARKS.md)
-    - [Alternative links](https://github.com/sinkaroid/jandapress/blob/master/CLOSING_REMARKS.md#alternative-links)
   - [Pronunciation](#Pronunciation)
+  - [Timeline](#timeline)
+    - [The Third Ascension](#third-ascension--rust-axum)
   - [Legal](#legal)
   - [Microservices](#microservices)
 
 ## The problem
 
-Many developers consume doujin websites as a source of data when building web applications. However, most of these sites — such as pururin, simply-hentai, and others — do not provide official APIs or public resources that can be easily integrated into applications.
+Many people consume doujin websites as a source of data when building web applications. However, most of these sites — such as pururin, simply-hentai, and others — do not provide official APIs or public resources that can be easily integrated into applications.
 
-As a result, developers often need to implement their own scraping logic, build multiple abstractions, and manually maintain integrations for each site.
+As a result, they often need to implement their own scraping logic, build multiple abstractions, and manually maintain integrations for each site.
 
-Jandapress aims to simplify this process by providing a unified interface for accessing data across multiple doujin sites. Instead of maintaining separate implementations, developers can rely on Jandapress to reduce complexity and development overhead.
+Jandapress aims to simplify this process by providing a unified interface for accessing data across multiple doujin sites. Instead of maintaining separate implementations, they can rely on Jandapress to reduce complexity and development overhead.
 
 The current state of the service is **free to use**, meaning anonymous usage is allowed. No authentication is required, and **CORS is enabled** to support browser-based applications.
 
@@ -59,41 +59,37 @@ The current state of the service is **free to use**, meaning anonymous usage is 
 
 Some tests may fail in CI environments because certain doujin websites restrict or block automated requests originating from CI infrastructure and shared IP ranges.
 
-| Site            | Status                                                                                                                                                                            | Get | Search | Random |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------ | ------ |
-| `nhentai`       | [![Nhentai](https://github.com/sinkaroid/jandapress/workflows/Nhentai%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/nhentai.yml)                   | ✅  | ✅     | ✅     |
-| `pururin`       | [![Pururin](https://github.com/sinkaroid/jandapress/workflows/Pururin%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/pururin.yml)                   | ✅  | ✅     | ✅     |
-| `hentaifox`     | [![Hentaifox](https://github.com/sinkaroid/jandapress/workflows/Hentaifox%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/hentaifox.yml)             | ✅  | ✅     | ✅     |
-| `hentai2read`   | [![Hentai2read](https://github.com/sinkaroid/jandapress/workflows/Hentai2read%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/hentai2read.yml)       | ✅  | ✅     | ❌     |
-| `simply-hentai` | [![Simply-hentai](https://github.com/sinkaroid/jandapress/workflows/Simply-hentai%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/simply-hentai.yml) | ✅  | ❌     | ❌     |
-| `asmhentai`     | [![Asmhentai](https://github.com/sinkaroid/jandapress/workflows/Asmhentai%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/asmhentai.yml)             | ✅  | ✅     | ✅     |
-| `3hentai`       | [![Asmhentai](https://github.com/sinkaroid/jandapress/workflows/3hentai%20test/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/3hentai.yml)                 | ✅  | ✅     | ✅     |
+| Site            | Status                                                                                                                                                                              | Get | Search | Random |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------ | ------ |
+| `nhentai`       | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ✅     |
+| `pururin`       | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ✅     |
+| `hentaifox`     | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ✅     |
+| `hentai2read`   | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ❌     |
+| `simply-hentai` | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ❌     | ❌     |
+| `asmhentai`     | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ✅     |
+| `3hentai`       | [![Test Scraper](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml/badge.svg)](https://github.com/sinkaroid/jandapress/actions/workflows/test-scraper.yml) | ✅  | ✅     | ✅     |
 
 ## Features
 
-- Aggregates data from multiple doujin sites.
-- Provides a consistent and structured response format across all sources.
-- Extracted objects are normalized and reassembled to support extensibility.
+- Decentralized and aggregated data.
+- Consistent and structured responses.
+- Objects are normalized and reassembled to support extensibility.
 - Unified interface supporting **get**, **search**, and **random** methods.
-- Planned support for optional **JWT authentication** in future releases.
-- Primarily based on pure scraping techniques (with limited exceptions where required).
+- Pure scraping, only nhentai which uses official API endpoint.
 
 ## Prerequisites
 
 <table>
-  <td><b>NOTE:</b> Bun 1.3.14 or higher / or simply just use docker</td>
+  <td><b>NOTE:</b> Rust 1.96.0 or higher / or simply just use docker</td>
 </table>
 
-To handle several requests from each web, You will also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/), You can also choose another provider as we using [keyv](https://github.com/jaredwray/keyv) Key-value storage with support for multiple backends. All data must be stored in `<Buffer>` here.
+To handle several requests, You also need [Redis](https://redis.io/) for persistent caching, free tier is available on [Redis Labs](https://redislabs.com/).
 
 ## Installation
 
 Rename `.env.schema` to `.env` and fill the value with your own
 
 ```bash
-# railway, fly.dev, heroku, vercel or any free service
-RAILWAY = sinkaroid
-
 # Enable or disable the GraphQL endpoint (/graphql). Set to true to enable.
 JANDAPRESS_GRAPHQL = true
 
@@ -107,10 +103,10 @@ REDIS_URL = redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.clo
 EXPIRE_CACHE = 1
 
 # optional: API key for nhentai official API
-NHENTAI_API_KEY = ""
+NHENTAI_API_KEY = "some_nice_key"
 
 # optional custom user agent for upstream requests
-USER_AGENT = "jandapress/10.0.1-alpha Bun/1.3.14"
+USER_AGENT = "jandapress/10.6.3 Rust/1.96.0"
 ```
 
 ### Docker
@@ -118,16 +114,16 @@ USER_AGENT = "jandapress/10.0.1-alpha Bun/1.3.14"
     docker pull ghcr.io/sinkaroid/jandapress:latest
     docker run -p 3000:3000 -d ghcr.io/sinkaroid/jandapress:latest
 
-### Docker (adjust your own)
+### Docker or Podman
 
 ```bash
 docker run -d \
   --name=jandapress \
-  -p 3025:3000 \
+  --restart unless-stopped \
+  -p 8066:3000 \
   -e REDIS_URL='redis://default:somenicepassword@redis-666.c10.us-east-6-6.ec666.cloud.redislabs.com:1337' \
   -e EXPIRE_CACHE='1' \
-  -e NHENTAI_API_KEY='' \
-  -e USER_AGENT='jandapress/10.0.1-alpha Bun/1.3.14' \
+  -e NHENTAI_API_KEY='some_nice_key' \
   ghcr.io/sinkaroid/jandapress:latest
 ```
 
@@ -135,55 +131,23 @@ docker run -d \
 
     git clone https://github.com/sinkaroid/jandapress.git
 
-- Install dependencies
-  - `bun install`
 - Jandapress production
-  - `bun run start:prod`
+  - `cargo start-prod`
 - Jandapress testing and hot reload
-  - `bun run start:dev`
+  - `cargo start-dev`
 
 ## Nhentai Guide
 
 ### The solution
 
-Jandapress now targets the nhentai official API endpoints (`/api/v2`) for search, related, and random ID discovery.
+The CloudFlare issue has been resolved by using nhentai official API endpoints (`/api/v2`) for search, related, and random ID discovery.
 
 - set `NHENTAI_API_KEY` in `.env` (optional but recommended)
 - set `USER_AGENT` in `.env` if you need a custom upstream identifier
-- validate upstream with `bun run test` or `bun run test:nhentai`
-- if you want to adjust nhentai contracts/mapping, read `docs/nhentai-api-contract.md` first
 
 ## Tests
 
-Run the following commands to execute tests for each supported source:
-
-```bash
-# Check whether all supported sites are available for scraping
-bun run test:scrape
-
-# Run tests for individual sources
-bun run test:nhentai
-bun run test:pururin
-bun run test:hentaifox
-bun run test:asmhentai
-bun run test:hentai2read
-bun run test:simply-hentai
-bun run test:3hentai
-```
-
-### Start the production server
-
-`bun run start:prod`
-
-### Running development server
-
-`bun run start:dev`
-
-### OpenAPI and playground
-
-`bun run build` then open `/doc` or `/playground`
-
-> To running other tests, you can see object scripts in file `package.json`
+[`.cargo/config.toml`](.cargo/config.toml)
 
 ## Playground
 
@@ -201,10 +165,10 @@ The GraphQL endpoint is experimental and gated behind the `JANDAPRESS_GRAPHQL=tr
 
    ```bash
    # On Unix-like systems
-   JANDAPRESS_GRAPHQL=true bun run start:dev
+   JANDAPRESS_GRAPHQL=true cargo start-dev
 
    # On Windows (PowerShell)
-   $env:JANDAPRESS_GRAPHQL="true"; bun run start:dev
+   $env:JANDAPRESS_GRAPHQL="true"; cargo start-dev
    ```
 
 2. **Accessing endpoint**: Send `GET` or `POST` requests to `http://localhost:3000/graphql`.
@@ -396,6 +360,26 @@ The missing piece of 3hentai - https://sinkaroid.github.io/jandapress/#GET/3hent
 ## Pronunciation
 
 [`id_ID`](https://www.localeplanet.com/java/id-ID/index.html) • **/jan·da/** — Dewasa dan mengikat; _(?)_ **/press/** shorthand for expressjs (legacy name); _(?)_
+
+## Timeline
+
+The project has gone through three major architectural phases, with each iteration driven by the same goal: **serving a large production workload while continuously reducing runtime overhead and memory consumption.** The jandapress powers [scathachbot.xyz](https://scathachbot.xyz/) which serves more than 60K servers. It is intentionally deployed on low-memory VMs with less than 4 GB of RAM, where every megabyte matters because the machine also hosts multiple other services.
+
+### First Ascension — NodeJS, Express
+
+The initial version was built with **Express.js**. The `janda(press)` branding came from this version. But it's bloated.
+
+### Second Ascension — Bun, Hono
+
+The second iteration migrated to **Hono running on Bun** significantly reducing the overhead compared to the first implementation.
+
+- This was significant improvements. However, after running continuously for several weeks, its memory usage could reach approximately >350 MB. While reasonable in isolation, that footprint becomes significant when multiple services share the same constrained VM.
+
+### Third Ascension — Rust, Axum
+
+Focus on minimal runtime overhead, predictable resource consumption, and long-term performance. I will keep looking forward on it.
+
+- The goal of the third phase is not merely higher performance, but dramatically lower and more predictable resource consumption, allowing the service to coexist efficiently with other workloads on small VMs.
 
 ## Legal
 
