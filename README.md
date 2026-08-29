@@ -363,7 +363,9 @@ The missing piece of 3hentai - https://sinkaroid.github.io/jandapress/#GET/3hent
 
 ## Timeline
 
-The project has gone through three major architectural phases, with each iteration driven by the same goal: **serving a large production workload while continuously reducing runtime overhead and memory consumption.** The jandapress powers [scathachbot.xyz](https://scathachbot.xyz/) which serves more than 60K servers. It is intentionally deployed on low-memory VMs with less than 4 GB of RAM, where every megabyte matters because the machine also hosts multiple other services.
+The project has gone through three major architectural phases, with each iteration driven by the same goal:
+
+- **Serving large production workload while continuously reducing runtime overhead and memory consumption.** The jandapress powers [scathachbot.xyz](https://scathachbot.xyz/) which serves more than 60K servers. It is intentionally deployed on low-memory VMs with less than 4 GB of RAM, where every megabyte matters because the machine also hosts multiple other services.
 
 ### First Ascension — NodeJS, Express
 
