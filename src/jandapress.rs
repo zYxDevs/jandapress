@@ -1,7 +1,7 @@
 use crate::cache::CacheManager;
 use crate::config::Config;
 use crate::error::AppError;
-use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, USER_AGENT};
+use reqwest::header::{AUTHORIZATION, HeaderMap, HeaderValue, USER_AGENT};
 use serde_json::Value;
 use std::time::Duration;
 use tracing::info;
@@ -41,7 +41,8 @@ impl JandaPress {
         let mut headers = HeaderMap::new();
         headers.insert(
             USER_AGENT,
-            HeaderValue::from_str(&self.user_agent).unwrap_or_else(|_| HeaderValue::from_static("")),
+            HeaderValue::from_str(&self.user_agent)
+                .unwrap_or_else(|_| HeaderValue::from_static("")),
         );
 
         if let Some(key) = &self.nhentai_api_key {
